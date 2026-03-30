@@ -330,17 +330,17 @@ L: Augeo, augere, auxi, auctus
 E: To increase, exaggerate;
 L: Tintino, tintinare, tintinavi, tintinatus
 E: To ring;
-L: Metus, metus
+L: Metus, metus (m)
 E: Fear, dread;
-L: Corpus, corporis
+L: Corpus, corporis (n)
 E: Body;
-L: Gemitus, gemitus
+L: Gemitus, gemitus (m)
 E: Groan, sigh;
-L: Ira, irae
+L: Ira, irae (f)
 E: Anger;
-L: Opes, opum
+L: Opes, opum (f)
 E: Money, wealth;
-L: Ventus, venti
+L: Ventus, venti (m)
 E: Wind;
 L: Malus, mala, malum
 E: Bad;
@@ -360,6 +360,7 @@ E: Having suspected;`;
     const importFeedbackEl = document.getElementById("importFeedback");
     const titleEl = document.getElementById("title");
     const themeToggleEl = document.getElementById("themeToggle");
+    const THEME_STORAGE_KEY = "latin-quiz-theme";
 
     let stageNumber = "28";
     let vocab = [];
@@ -379,14 +380,20 @@ E: Having suspected;`;
 
     function cleanEntry(text) {
       return text
-        .replace(/\s*\([^)]*\)\s*/g, " ")
         .replace(/[“”"]/g, "")
         .replace(/\s+/g, " ")
         .trim();
     }
 
-    function splitList(text) {
-      return cleanEntry(text)
+    function splitList(text, options = {}) {
+      const { preserveParentheses = false } = options;
+      let cleaned = cleanEntry(text);
+
+      if (!preserveParentheses) {
+        cleaned = cleaned.replace(/\s*\([^)]*\)\s*/g, " ");
+      }
+
+      return cleaned
         .replace(/;$/, "")
         .split(",")
         .map((part) => cleanEntry(part))
@@ -416,7 +423,7 @@ E: Having suspected;`;
         }
 
         if (lower.startsWith("l:")) {
-          pendingLatin = splitList(line.slice(2));
+          pendingLatin = splitList(line.slice(2), { preserveParentheses: true });
           continue;
         }
 
@@ -465,6 +472,12 @@ E: Having suspected;`;
 
     function updateHeader() {
       titleEl.textContent = `Latin Quiz for Stage ${stageNumber}`;
+    }
+
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+      document.body.classList.toggle("dark", isDark);
+      themeToggleEl.textContent = isDark ? "Light Mode" : "Dark Mode";
     }
 
     function buildVocabList() {
@@ -589,8 +602,9 @@ E: Having suspected;`;
     modeEl.addEventListener("change", nextQuestion);
     difficultyEl.addEventListener("change", nextQuestion);
     themeToggleEl.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      themeToggleEl.textContent = document.body.classList.contains("dark") ? "Light Mode" : "Dark Mode";
+      const nextTheme = document.body.classList.contains("dark") ? "light" : "dark";
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
     });
     answerEl.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
@@ -598,6 +612,7 @@ E: Having suspected;`;
       }
     });
 
+    applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "light");
     importTextEl.value = DEFAULT_IMPORT_TEXT;
     loadVocabulary(DEFAULT_IMPORT_TEXT);
   </script>
