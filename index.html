@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Latin Quiz</title>
+  <style>
+    :root {
+      --bg: #f6f1e8;
+      --panel: #fffaf2;
+      --ink: #1f1a14;
+      --accent: #9f3d22;
+      --good: #245c35;
+      --bad: #8f1d1d;
+      --border: #d6c3ae;
+      --soft: #7e6d5d;
+      --field: #fff;
+    }
+
+    body.dark {
+      --bg: #161412;
+      --panel: #221d19;
+      --ink: #f4ece1;
+      --accent: #d16a43;
+      --good: #8ddaab;
+      --bad: #ff9b9b;
+      --border: #5b4a3d;
+      --soft: #c7b6a7;
+      --field: #2c2520;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 35%),
+        linear-gradient(180deg, #efe3d1, var(--bg));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    body.dark {
+      background: #161412;
+    }
+
+    .card {
+      width: min(860px, 100%);
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(72, 46, 25, 0.12);
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 1.25rem;
+    }
+
+    .sub {
+      margin: 0 0 20px;
+      color: #5b4a3d;
+    }
+
+    .controls,
+    .stats,
+    .import-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .badge,
+    select,
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .badge,
+    select {
+      background: var(--field);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 14px;
+    }
+
+    body.dark select {
+      color: var(--ink);
+      background: var(--field);
+    }
+
+    body.dark option {
+      color: var(--ink);
+      background: var(--field);
+    }
+
+    .prompt-box,
+    .import-box {
+      border: 2px dashed var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.65);
+      margin: 20px 0;
+    }
+
+    body.dark .prompt-box,
+    body.dark .import-box {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .label {
+      display: block;
+      font-size: 0.95rem;
+      color: #6a5646;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    #prompt {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      line-height: 1.2;
+    }
+
+    .answer-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0 10px;
+    }
+
+    input,
+    textarea {
+      min-width: 0;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--field);
+      color: var(--ink);
+    }
+
+    input {
+      flex: 1 1 280px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fffaf5;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    button.secondary {
+      background: #6b5d4c;
+    }
+
+    .helper {
+      margin: 0 0 12px;
+      color: var(--soft);
+    }
+
+    #feedback,
+    #importFeedback {
+      min-height: 1.5em;
+      margin: 10px 0 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    #feedback.good,
+    #importFeedback.good {
+      color: var(--good);
+    }
+
+    #feedback.bad,
+    #importFeedback.bad {
+      color: var(--bad);
+    }
+
+    details {
+      margin-top: 18px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 12px 0 0;
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 6px;
+    }
+
+    code {
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 560px) {
+      .card {
+        padding: 20px;
+      }
+
+      .answer-row {
+        flex-direction: column;
+      }
+
+      button,
+      input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1 id="title">Latin Quiz for Stage 28</h1>
+    <p class="sub">Practice the Latin-English vocabulary for your next quiz.</p>
+
+    <div class="controls">
+      <label class="badge" for="mode">
+        Direction:
+        <select id="mode">
+          <option value="latin-to-english">Latin to English</option>
+          <option value="english-to-latin">English to Latin</option>
+          <option value="mixed">Mixed</option>
+        </select>
+      </label>
+      <label class="badge" for="difficulty">
+        Difficulty:
+        <select id="difficulty">
+          <option value="hard">Hard</option>
+          <option value="easy">Easy</option>
+        </select>
+      </label>
+      <button id="themeToggle" class="secondary" type="button">Dark Mode</button>
+      <button id="reveal" class="secondary" type="button">Reveal Answer</button>
+    </div>
+
+    <div class="stats">
+      <span class="badge">Correct: <strong id="correct">0</strong></span>
+      <span class="badge">Attempted: <strong id="attempted">0</strong></span>
+    </div>
+
+    <section class="prompt-box">
+      <span class="label" id="promptLabel">Translate this Latin word</span>
+      <p id="prompt"></p>
+    </section>
+
+    <div class="answer-row">
+      <input id="answer" type="text" placeholder="Type your answer here" autocomplete="off" />
+      <button id="check" type="button">Check Answer</button>
+      <button id="newQuestion" class="secondary" type="button">New Question</button>
+    </div>
+
+    <p id="feedback"></p>
+
+    <details class="import-box">
+      <summary>Load New Vocabulary</summary>
+      <p class="helper">Paste vocab in this format: <code>stage: "x";</code>, then alternating <code>L:</code> and <code>E:</code> lines.</p>
+      <textarea id="importText" spellcheck="false"></textarea>
+      <div class="import-actions">
+        <button id="loadVocab" type="button">Load Vocabulary</button>
+        <button id="resetDefault" class="secondary" type="button">Reset to Default Stage 28</button>
+      </div>
+      <p id="importFeedback"></p>
+    </details>
+
+    <details>
+      <summary>Show full vocabulary list</summary>
+      <ul id="vocabList"></ul>
+    </details>
+  </main>
+
+  <script>
+    const DEFAULT_IMPORT_TEXT = `stage: "28";
+L: Constituo, constituere, constitui, constitutus
+E: To decide;
+L: Doleo, dolere, dolui
+E: To hurt, to be in pain;
+L: Mando, mandare, mandavi, mandatus
+E: To order, entrust;
+L: Occido, occidere, occidi, occisus
+E: To kill;
+L: Denuntio, denuntiare, denuntiavi, denuntiatus
+E: To denounce, reveal;
+L: Augeo, augere, auxi, auctus
+E: To increase, exaggerate;
+L: Tintino, tintinare, tintinavi, tintinatus
+E: To ring;
+L: Metus, metus
+E: Fear, dread;
+L: Corpus, corporis
+E: Body;
+L: Gemitus, gemitus
+E: Groan, sigh;
+L: Ira, irae
+E: Anger;
+L: Opes, opum
+E: Money, wealth;
+L: Ventus, venti
+E: Wind;
+L: Malus, mala, malum
+E: Bad;
+L: Suspicatus, suspicata, suspicatum
+E: Having suspected;`;
+
+    const promptEl = document.getElementById("prompt");
+    const promptLabelEl = document.getElementById("promptLabel");
+    const answerEl = document.getElementById("answer");
+    const feedbackEl = document.getElementById("feedback");
+    const correctEl = document.getElementById("correct");
+    const attemptedEl = document.getElementById("attempted");
+    const modeEl = document.getElementById("mode");
+    const difficultyEl = document.getElementById("difficulty");
+    const vocabListEl = document.getElementById("vocabList");
+    const importTextEl = document.getElementById("importText");
+    const importFeedbackEl = document.getElementById("importFeedback");
+    const titleEl = document.getElementById("title");
+    const themeToggleEl = document.getElementById("themeToggle");
+
+    let stageNumber = "28";
+    let vocab = [];
+    let currentCard = null;
+    let currentDirection = "latin-to-english";
+    let remainingIndexes = [];
+    let correct = 0;
+    let attempted = 0;
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .replace(/[“”"'.;:!?()]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function cleanEntry(text) {
+      return text
+        .replace(/\s*\([^)]*\)\s*/g, " ")
+        .replace(/[“”"]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function splitList(text) {
+      return cleanEntry(text)
+        .replace(/;$/, "")
+        .split(",")
+        .map((part) => cleanEntry(part))
+        .filter(Boolean);
+    }
+
+    function parseVocabBlock(text) {
+      const lines = text
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      let parsedStage = "Custom";
+      const cards = [];
+      let pendingLatin = null;
+
+      for (const rawLine of lines) {
+        const line = rawLine.replace(/\u00a0/g, " ");
+        const lower = line.toLowerCase();
+
+        if (lower.startsWith("stage")) {
+          const match = line.match(/stage\s*:\s*[“"]?([^;"”]+)[”"]?\s*;?/i);
+          if (match) {
+            parsedStage = cleanEntry(match[1]);
+          }
+          continue;
+        }
+
+        if (lower.startsWith("l:")) {
+          pendingLatin = splitList(line.slice(2));
+          continue;
+        }
+
+        if (lower.startsWith("e:")) {
+          const english = splitList(line.slice(2));
+          if (pendingLatin && pendingLatin.length && english.length) {
+            cards.push({ latin: pendingLatin, english });
+          }
+          pendingLatin = null;
+        }
+      }
+
+      if (!cards.length) {
+        throw new Error("No vocabulary entries found. Use stage / L / E lines like in the example.");
+      }
+
+      return { stage: parsedStage, cards };
+    }
+
+    function chooseDirection() {
+      if (modeEl.value === "mixed") {
+        return Math.random() < 0.5 ? "latin-to-english" : "english-to-latin";
+      }
+      return modeEl.value;
+    }
+
+    function formatLatin(card) {
+      return card.latin.join(", ");
+    }
+
+    function formatEnglish(card) {
+      return card.english.join(", ");
+    }
+
+    function acceptableAnswers(card, direction, difficulty) {
+      if (difficulty === "hard") {
+        return direction === "latin-to-english"
+          ? [normalize(formatEnglish(card))]
+          : [normalize(formatLatin(card))];
+      }
+
+      return direction === "latin-to-english"
+        ? card.english.map(normalize)
+        : card.latin.map(normalize);
+    }
+
+    function updateHeader() {
+      titleEl.textContent = `Latin Quiz for Stage ${stageNumber}`;
+    }
+
+    function buildVocabList() {
+      vocabListEl.innerHTML = "";
+      vocab.forEach((card) => {
+        const item = document.createElement("li");
+        item.textContent = `${formatLatin(card)} = ${formatEnglish(card)}`;
+        vocabListEl.appendChild(item);
+      });
+    }
+
+    function resetScore() {
+      correct = 0;
+      attempted = 0;
+      correctEl.textContent = "0";
+      attemptedEl.textContent = "0";
+    }
+
+    function resetQuestionPool() {
+      remainingIndexes = vocab.map((_, index) => index);
+    }
+
+    function nextCardIndex() {
+      if (!remainingIndexes.length) {
+        resetQuestionPool();
+      }
+
+      const randomOffset = Math.floor(Math.random() * remainingIndexes.length);
+      return remainingIndexes.splice(randomOffset, 1)[0];
+    }
+
+    function nextQuestion() {
+      currentCard = vocab[nextCardIndex()];
+      currentDirection = chooseDirection();
+      const showLatin = currentDirection === "latin-to-english";
+
+      promptLabelEl.textContent = showLatin
+        ? "Translate this Latin word"
+        : "Translate this English meaning";
+      promptEl.textContent = showLatin ? formatLatin(currentCard) : formatEnglish(currentCard);
+
+      answerEl.value = "";
+      feedbackEl.textContent = "";
+      feedbackEl.className = "";
+      answerEl.focus();
+    }
+
+    function checkAnswer() {
+      if (!currentCard) {
+        return;
+      }
+
+      const guess = normalize(answerEl.value);
+      if (!guess) {
+        feedbackEl.textContent = "Type an answer first.";
+        feedbackEl.className = "bad";
+        return;
+      }
+
+      attempted += 1;
+      attemptedEl.textContent = attempted;
+
+      const answers = acceptableAnswers(currentCard, currentDirection, difficultyEl.value);
+      const isCorrect = answers.includes(guess);
+
+      if (isCorrect) {
+        correct += 1;
+        correctEl.textContent = correct;
+        feedbackEl.textContent = "Correct.";
+        feedbackEl.className = "good";
+      } else {
+        const revealText = currentDirection === "latin-to-english"
+          ? formatEnglish(currentCard)
+          : formatLatin(currentCard);
+        feedbackEl.textContent = `Not quite. Answer: ${revealText}`;
+        feedbackEl.className = "bad";
+      }
+    }
+
+    function revealAnswer() {
+      if (!currentCard) {
+        return;
+      }
+
+      const revealText = currentDirection === "latin-to-english"
+        ? formatEnglish(currentCard)
+        : formatLatin(currentCard);
+      feedbackEl.textContent = `Answer: ${revealText}`;
+      feedbackEl.className = "";
+    }
+
+    function loadVocabulary(text) {
+      const parsed = parseVocabBlock(text);
+      stageNumber = parsed.stage;
+      vocab = parsed.cards;
+      updateHeader();
+      buildVocabList();
+      resetScore();
+      resetQuestionPool();
+      nextQuestion();
+    }
+
+    function handleLoadVocabulary() {
+      try {
+        loadVocabulary(importTextEl.value);
+        importFeedbackEl.textContent = `Loaded Stage ${stageNumber} with ${vocab.length} vocab words.`;
+        importFeedbackEl.className = "good";
+      } catch (error) {
+        importFeedbackEl.textContent = error.message;
+        importFeedbackEl.className = "bad";
+      }
+    }
+
+    document.getElementById("check").addEventListener("click", checkAnswer);
+    document.getElementById("newQuestion").addEventListener("click", nextQuestion);
+    document.getElementById("reveal").addEventListener("click", revealAnswer);
+    document.getElementById("loadVocab").addEventListener("click", handleLoadVocabulary);
+    document.getElementById("resetDefault").addEventListener("click", () => {
+      importTextEl.value = DEFAULT_IMPORT_TEXT;
+      handleLoadVocabulary();
+    });
+    modeEl.addEventListener("change", nextQuestion);
+    difficultyEl.addEventListener("change", nextQuestion);
+    themeToggleEl.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      themeToggleEl.textContent = document.body.classList.contains("dark") ? "Light Mode" : "Dark Mode";
+    });
+    answerEl.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    importTextEl.value = DEFAULT_IMPORT_TEXT;
+    loadVocabulary(DEFAULT_IMPORT_TEXT);
+  </script>
+</body>
+</html>
