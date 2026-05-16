@@ -303,7 +303,7 @@
       <textarea id="importText" spellcheck="false"></textarea>
       <div class="import-actions">
         <button id="loadVocab" type="button">Load Vocabulary</button>
-        <button id="resetDefault" class="secondary" type="button">Reset to Default Stage 28</button>
+        <button id="resetDefault" class="secondary" type="button">Reset to Default Stage 9999</button>
       </div>
       <p id="importFeedback"></p>
     </details>
@@ -315,37 +315,61 @@
   </main>
 
   <script>
-    const DEFAULT_IMPORT_TEXT = `stage: "28";
-L: Constituo, constituere, constitui, constitutus
-E: To decide;
-L: Doleo, dolere, dolui
-E: To hurt, to be in pain;
-L: Mando, mandare, mandavi, mandatus
-E: To order, entrust;
+    const DEFAULT_IMPORT_TEXT = `stage: "9999";
+L: Constituo, constituere, constitui, constitus
+E: To decide 
+L: Doleo, dolere, dolui 
+E: To hurt, to be in pain 
+L: Mando, mandare, mandavi, mandatus 
+E: To order, entrust 
 L: Occido, occidere, occidi, occisus
-E: To kill;
-L: Denuntio, denuntiare, denuntiavi, denuntiatus
-E: To denounce, reveal;
+E: To kill
+L: Denuntio, denuntiare, denuntiavi, denuntiatus 
+E: To denounce reveal 
 L: Augeo, augere, auxi, auctus
-E: To increase, exaggerate;
-L: Tintino, tintinare, tintinavi, tintinatus
-E: To ring;
-L: Metus, metus (m)
-E: Fear, dread;
+E: To increase, exaggerate 
+L: Tintino, tintinare, tintinavi, tintinatus 
+E: To ring 
+L: Metus, metūs (m) 
+E: Fear, dread 
 L: Corpus, corporis (n)
-E: Body;
-L: Gemitus, gemitus (m)
-E: Groan, sigh;
+E: Body 
+L: Gemitus, gemitūs (m)
+E: Groan, sigh
 L: Ira, irae (f)
-E: Anger;
-L: Opes, opum (f)
-E: Money, wealth;
-L: Ventus, venti (m)
-E: Wind;
-L: Malus, mala, malum
-E: Bad;
+E: anger
+L: Opes, opum (f pl)
+E: Money, wealth
+L: beneficium, i (n)
+E: favor 
+L: malus, mala, malum
+E: Bad 
 L: Suspicatus, suspicata, suspicatum
-E: Having suspected;`;
+E: Having suspected 
+L: sumptuosus, -a, -um
+E: lavish
+L: lego, legare, legavi, legatus 
+E: give, bequeath
+L: sepelio, sepelire, seplivi, seplutus 
+E: to bury 
+L: mora, morae (f)
+E: delay 
+L: fallo, fallere, fefelli, falsus 
+E: to deceive 
+L: adhibeo, adhibere, adhibui, adhibitus 
+E: to use, supply
+L: infestus, a, um
+E: dangerous, hostile 
+L: abhorreo, aborrere, abhorrui 
+E: to shrink (from) 
+L: Falsum, i (n)
+E: lie 
+L: haud
+E: not 
+L: fraus, fraudis (m)
+E: trick
+L: avaritia, avaritiae (f)
+E: greed`;
 
     const promptEl = document.getElementById("prompt");
     const promptLabelEl = document.getElementById("promptLabel");
