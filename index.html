@@ -15,6 +15,7 @@
       --border: #d6c3ae;
       --soft: #7e6d5d;
       --field: #fff;
+      --choice-hover: rgba(159, 61, 34, 0.06);
     }
 
     body.dark {
@@ -27,6 +28,7 @@
       --border: #5b4a3d;
       --soft: #c7b6a7;
       --field: #2c2520;
+      --choice-hover: rgba(209, 106, 67, 0.18);
     }
 
     * {
@@ -36,7 +38,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background:
         radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 35%),
@@ -56,27 +58,18 @@
       border: 2px solid var(--border);
       border-radius: 20px;
       padding: 28px;
-      box-shadow: 0 18px 50px rgba(72, 46, 25, 0.12);
-    }
-
-    h1,
-    h2 {
-      margin: 0;
+      box-shadow: 0 18px 50px rgba(72, 46, 25, 0.18);
     }
 
     h1 {
-      margin-bottom: 8px;
-      font-size: clamp(2rem, 4vw, 2.8rem);
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      font-size: 1.25rem;
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 2.6rem);
     }
 
     .sub {
       margin: 0 0 20px;
-      color: #5b4a3d;
+      color: var(--soft);
+      font-size: 0.95rem;
     }
 
     .controls,
@@ -102,7 +95,7 @@
       background: var(--field);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 10px 14px;
+      padding: 8px 12px;
     }
 
     body.dark select {
@@ -119,7 +112,7 @@
     .import-box {
       border: 2px dashed var(--border);
       border-radius: 18px;
-      padding: 24px;
+      padding: 20px 22px;
       background: rgba(255, 255, 255, 0.65);
       margin: 20px 0;
     }
@@ -131,17 +124,17 @@
 
     .label {
       display: block;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: #6a5646;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
     #prompt {
       margin: 0;
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
-      line-height: 1.2;
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      line-height: 1.25;
     }
 
     .answer-row {
@@ -154,8 +147,8 @@
     input,
     textarea {
       min-width: 0;
-      padding: 14px 16px;
-      border-radius: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--field);
       color: var(--ink);
@@ -170,38 +163,89 @@
       min-height: 220px;
       resize: vertical;
       line-height: 1.45;
+      font-size: 0.9rem;
     }
 
     button {
       border: 0;
-      border-radius: 14px;
-      padding: 14px 18px;
+      border-radius: 999px;
+      padding: 10px 16px;
       cursor: pointer;
       background: var(--accent);
       color: #fffaf5;
-      transition: transform 0.12s ease, opacity 0.12s ease;
+      transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+      white-space: nowrap;
     }
 
     button:hover {
       transform: translateY(-1px);
-      opacity: 0.95;
+      opacity: 0.96;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     button.secondary {
       background: #6b5d4c;
     }
 
+    #check {
+      min-width: 110px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    .choice-btn {
+      border-radius: 12px;
+      text-align: left;
+      padding: 12px 14px;
+      background: var(--field);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      font-size: 0.98rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      white-space: normal;
+    }
+
+    .choice-btn span.choice-label {
+      font-weight: 700;
+      min-width: 1.4em;
+    }
+
+    .choice-btn:hover {
+      background: var(--choice-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+
+    .choice-btn.correct {
+      border-color: var(--good);
+      box-shadow: 0 0 0 2px rgba(36, 92, 53, 0.25);
+    }
+
+    .choice-btn.wrong {
+      border-color: var(--bad);
+      box-shadow: 0 0 0 2px rgba(143, 29, 29, 0.25);
+    }
+
     .helper {
       margin: 0 0 12px;
       color: var(--soft);
+      font-size: 0.9rem;
     }
 
     #feedback,
     #importFeedback {
       min-height: 1.5em;
       margin: 10px 0 0;
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
     #feedback.good,
@@ -228,17 +272,20 @@
     ul {
       margin: 12px 0 0;
       padding-left: 22px;
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 0.92rem;
     }
 
     li + li {
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     code {
-      font-size: 0.95em;
+      font-size: 0.9em;
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 700px) {
       .card {
         padding: 20px;
       }
@@ -251,32 +298,39 @@
       input {
         width: 100%;
       }
+
+      .choice-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <main class="card">
-    <h1 id="title">Latin Quiz for Stage 28</h1>
-    <p class="sub">Practice the Latin-English vocabulary for your next quiz.</p>
+    <h1 id="title">Latin Quiz</h1>
+    <p class="sub">Practice Latin ↔ English with typing or multiple choice. Use your own vocab list if you want.</p>
 
     <div class="controls">
       <label class="badge" for="mode">
-        Direction:
+        Mode:
         <select id="mode">
-          <option value="latin-to-english">Latin to English</option>
-          <option value="english-to-latin">English to Latin</option>
-          <option value="mixed">Mixed</option>
+          <option value="latin-to-english">Typing: Latin → English</option>
+          <option value="english-to-latin">Typing: English → Latin</option>
+          <option value="mixed">Typing: Mixed</option>
+          <option value="mc-latin-to-english">Multiple Choice: Latin → English</option>
+          <option value="mc-english-to-latin">Multiple Choice: English → Latin</option>
+          <option value="mc-mixed">Multiple Choice: Mixed</option>
         </select>
       </label>
       <label class="badge" for="difficulty">
-        Difficulty:
+        Match:
         <select id="difficulty">
-          <option value="hard">Hard</option>
-          <option value="easy">Easy</option>
+          <option value="hard">Full phrase</option>
+          <option value="easy">Any meaning/form</option>
         </select>
       </label>
       <button id="themeToggle" class="secondary" type="button">Dark Mode</button>
-      <button id="reveal" class="secondary" type="button">Reveal Answer</button>
+      <button id="reveal" class="secondary" type="button">Reveal</button>
     </div>
 
     <div class="stats">
@@ -290,20 +344,41 @@
     </section>
 
     <div class="answer-row">
-      <input id="answer" type="text" placeholder="Type your answer here" autocomplete="off" />
-      <button id="check" type="button">Check Answer</button>
-      <button id="newQuestion" class="secondary" type="button">New Question</button>
+      <input id="answer" type="text" placeholder="Type your answer, then press Enter or Check" autocomplete="off" />
+      <button id="check" type="button">Check</button>
+      <button id="newQuestion" class="secondary" type="button">Next</button>
+    </div>
+
+    <div id="choiceContainer" style="display: none;">
+      <p class="helper">Click the correct answer.</p>
+      <div id="choiceGrid" class="choice-grid">
+        <button id="choice1" class="choice-btn" type="button">
+          <span class="choice-label">A.</span><span class="choice-text"></span>
+        </button>
+        <button id="choice2" class="choice-btn" type="button">
+          <span class="choice-label">B.</span><span class="choice-text"></span>
+        </button>
+        <button id="choice3" class="choice-btn" type="button">
+          <span class="choice-label">C.</span><span class="choice-text"></span>
+        </button>
+        <button id="choice4" class="choice-btn" type="button">
+          <span class="choice-label">D.</span><span class="choice-text"></span>
+        </button>
+      </div>
     </div>
 
     <p id="feedback"></p>
 
     <details class="import-box">
-      <summary>Load New Vocabulary</summary>
-      <p class="helper">Paste vocab in this format: <code>stage: "x";</code>, then alternating <code>L:</code> and <code>E:</code> lines.</p>
+      <summary>Load your own vocabulary</summary>
+      <p class="helper">
+        Format: <code>stage: "x";</code> once, then alternating <code>L:</code> and <code>E:</code> lines.<br />
+        Example: <code>L: amo, amare; E: to love</code>
+      </p>
       <textarea id="importText" spellcheck="false"></textarea>
       <div class="import-actions">
-        <button id="loadVocab" type="button">Load Vocabulary</button>
-        <button id="resetDefault" class="secondary" type="button">Reset to Default Stage 9999</button>
+        <button id="loadVocab" type="button">Load vocab</button>
+        <button id="resetDefault" class="secondary" type="button">Reset to default list</button>
       </div>
       <p id="importFeedback"></p>
     </details>
@@ -325,7 +400,7 @@ E: To order, entrust
 L: Occido, occidere, occidi, occisus
 E: To kill
 L: Denuntio, denuntiare, denuntiavi, denuntiatus 
-E: To denounce reveal 
+E: To denounce, reveal 
 L: Augeo, augere, auxi, auctus
 E: To increase, exaggerate 
 L: Tintino, tintinare, tintinavi, tintinatus 
@@ -337,39 +412,39 @@ E: Body
 L: Gemitus, gemitūs (m)
 E: Groan, sigh
 L: Ira, irae (f)
-E: anger
+E: Anger
 L: Opes, opum (f pl)
 E: Money, wealth
 L: beneficium, i (n)
-E: favor 
+E: Favor 
 L: malus, mala, malum
 E: Bad 
 L: Suspicatus, suspicata, suspicatum
 E: Having suspected 
 L: sumptuosus, -a, -um
-E: lavish
+E: Lavish
 L: lego, legare, legavi, legatus 
-E: give, bequeath
+E: Give, bequeath
 L: sepelio, sepelire, seplivi, seplutus 
-E: to bury 
+E: To bury 
 L: mora, morae (f)
-E: delay 
+E: Delay 
 L: fallo, fallere, fefelli, falsus 
-E: to deceive 
+E: To deceive 
 L: adhibeo, adhibere, adhibui, adhibitus 
-E: to use, supply
+E: To use, supply
 L: infestus, a, um
-E: dangerous, hostile 
+E: Dangerous, hostile 
 L: abhorreo, aborrere, abhorrui 
-E: to shrink (from) 
+E: To shrink (from) 
 L: Falsum, i (n)
-E: lie 
+E: Lie 
 L: haud
-E: not 
+E: Not 
 L: fraus, fraudis (m)
-E: trick
+E: Trick
 L: avaritia, avaritiae (f)
-E: greed`;
+E: Greed`;
 
     const promptEl = document.getElementById("prompt");
     const promptLabelEl = document.getElementById("promptLabel");
@@ -384,15 +459,24 @@ E: greed`;
     const importFeedbackEl = document.getElementById("importFeedback");
     const titleEl = document.getElementById("title");
     const themeToggleEl = document.getElementById("themeToggle");
+    const choiceContainerEl = document.getElementById("choiceContainer");
+    const choiceButtons = [
+      document.getElementById("choice1"),
+      document.getElementById("choice2"),
+      document.getElementById("choice3"),
+      document.getElementById("choice4"),
+    ];
     const THEME_STORAGE_KEY = "latin-quiz-theme";
 
-    let stageNumber = "28";
+    let stageNumber = "9999";
     let vocab = [];
     let currentCard = null;
     let currentDirection = "latin-to-english";
     let remainingIndexes = [];
     let correct = 0;
     let attempted = 0;
+    let currentCorrectOption = null; // for MC mode
+    let questionLocked = false; // prevents spam clicking
 
     function normalize(text) {
       return text
@@ -467,11 +551,24 @@ E: greed`;
       return { stage: parsedStage, cards };
     }
 
+    // Decide direction based on mode
     function chooseDirection() {
-      if (modeEl.value === "mixed") {
+      const mode = modeEl.value;
+
+      if (mode === "latin-to-english" || mode === "mc-latin-to-english") {
+        return "latin-to-english";
+      }
+      if (mode === "english-to-latin" || mode === "mc-english-to-latin") {
+        return "english-to-latin";
+      }
+      if (mode === "mixed" || mode === "mc-mixed") {
         return Math.random() < 0.5 ? "latin-to-english" : "english-to-latin";
       }
-      return modeEl.value;
+      return "latin-to-english";
+    }
+
+    function isMultipleChoiceMode() {
+      return modeEl.value.startsWith("mc-");
     }
 
     function formatLatin(card) {
@@ -494,8 +591,38 @@ E: greed`;
         : card.latin.map(normalize);
     }
 
+    function randomSubset(arr, n) {
+      const copy = [...arr];
+      const result = [];
+      while (result.length < n && copy.length > 0) {
+        const idx = Math.floor(Math.random() * copy.length);
+        result.push(copy.splice(idx, 1)[0]);
+      }
+      return result;
+    }
+
+    function makeMultipleChoiceOptions(card, direction, difficulty) {
+      const corrects = acceptableAnswers(card, direction, difficulty);
+      const correct = corrects[0];
+
+      const pool = vocab
+        .flatMap((c) => acceptableAnswers(c, direction, difficulty))
+        .filter((a) => !corrects.includes(a));
+
+      const wrongs = randomSubset(pool, 3);
+
+      const allOptions = [correct, ...wrongs];
+      return {
+        correct,
+        options: allOptions
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map((obj) => obj.value),
+      };
+    }
+
     function updateHeader() {
-      titleEl.textContent = `Latin Quiz for Stage ${stageNumber}`;
+      titleEl.textContent = `Latin Quiz – Stage ${stageNumber}`;
     }
 
     function applyTheme(theme) {
@@ -528,29 +655,12 @@ E: greed`;
       if (!remainingIndexes.length) {
         resetQuestionPool();
       }
-
       const randomOffset = Math.floor(Math.random() * remainingIndexes.length);
       return remainingIndexes.splice(randomOffset, 1)[0];
     }
 
-    function nextQuestion() {
-      currentCard = vocab[nextCardIndex()];
-      currentDirection = chooseDirection();
-      const showLatin = currentDirection === "latin-to-english";
-
-      promptLabelEl.textContent = showLatin
-        ? "Translate this Latin word"
-        : "Translate this English meaning";
-      promptEl.textContent = showLatin ? formatLatin(currentCard) : formatEnglish(currentCard);
-
-      answerEl.value = "";
-      feedbackEl.textContent = "";
-      feedbackEl.className = "";
-      answerEl.focus();
-    }
-
-    function checkAnswer() {
-      if (!currentCard) {
+    function checkAnswerTyping() {
+      if (!currentCard || isMultipleChoiceMode()) {
         return;
       }
 
@@ -570,25 +680,119 @@ E: greed`;
       if (isCorrect) {
         correct += 1;
         correctEl.textContent = correct;
-        feedbackEl.textContent = "Correct.";
+        feedbackEl.textContent = "Correct";
         feedbackEl.className = "good";
       } else {
-        const revealText = currentDirection === "latin-to-english"
-          ? formatEnglish(currentCard)
-          : formatLatin(currentCard);
-        feedbackEl.textContent = `Not quite. Answer: ${revealText}`;
+        const revealText =
+          currentDirection === "latin-to-english"
+            ? formatEnglish(currentCard)
+            : formatLatin(currentCard);
+        feedbackEl.textContent = `Not quite. Correct answer: ${revealText}`;
         feedbackEl.className = "bad";
       }
     }
 
-    function revealAnswer() {
-      if (!currentCard) {
-        return;
-      }
+    function attachChoiceHandlers() {
+      choiceButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!currentCard || !isMultipleChoiceMode() || questionLocked) return;
+          questionLocked = true;
 
-      const revealText = currentDirection === "latin-to-english"
-        ? formatEnglish(currentCard)
-        : formatLatin(currentCard);
+          const choiceText = normalize(btn.querySelector(".choice-text").textContent);
+          attempted += 1;
+          attemptedEl.textContent = attempted;
+
+          choiceButtons.forEach((b) => b.classList.remove("correct", "wrong"));
+
+          if (choiceText === currentCorrectOption) {
+            correct += 1;
+            correctEl.textContent = correct;
+            btn.classList.add("correct");
+            feedbackEl.textContent = "Correct";
+            feedbackEl.className = "good";
+          } else {
+            btn.classList.add("wrong");
+            const revealText =
+              currentDirection === "latin-to-english"
+                ? formatEnglish(currentCard)
+                : formatLatin(currentCard);
+            feedbackEl.textContent = `Not quite. Correct answer: ${revealText}`;
+            feedbackEl.className = "bad";
+
+            // highlight the correct one
+            choiceButtons.forEach((b) => {
+              const t = normalize(b.querySelector(".choice-text").textContent);
+              if (t === currentCorrectOption) {
+                b.classList.add("correct");
+              }
+            });
+          }
+        });
+      });
+    }
+
+    function showTypingUI(show) {
+      const answerRow = document.querySelector(".answer-row");
+      answerRow.style.display = show ? "flex" : "none";
+    }
+
+    function showChoiceUI(show) {
+      choiceContainerEl.style.display = show ? "block" : "none";
+    }
+
+    function nextQuestion() {
+      if (!vocab.length) return;
+
+      currentCard = vocab[nextCardIndex()];
+      currentDirection = chooseDirection();
+      const showLatin = currentDirection === "latin-to-english";
+      questionLocked = false;
+      feedbackEl.textContent = "";
+      feedbackEl.className = "";
+
+      const mc = isMultipleChoiceMode();
+
+      if (mc) {
+        promptLabelEl.textContent = showLatin
+          ? "Multiple choice: Latin → English"
+          : "Multiple choice: English → Latin";
+        promptEl.textContent = showLatin
+          ? "L: " + formatLatin(currentCard)
+          : "E: " + formatEnglish(currentCard);
+        showTypingUI(false);
+        showChoiceUI(true);
+
+        const { correct, options } =
+          makeMultipleChoiceOptions(currentCard, currentDirection, difficultyEl.value);
+        currentCorrectOption = correct;
+
+        choiceButtons.forEach((btn, idx) => {
+          btn.classList.remove("correct", "wrong");
+          const textSpan = btn.querySelector(".choice-text");
+          textSpan.textContent = options[idx];
+        });
+      } else {
+        promptLabelEl.textContent = showLatin
+          ? "Translate this Latin word"
+          : "Translate this English meaning";
+        promptEl.textContent = showLatin
+          ? formatLatin(currentCard)
+          : formatEnglish(currentCard);
+        showTypingUI(true);
+        showChoiceUI(false);
+
+        answerEl.value = "";
+        answerEl.focus();
+      }
+    }
+
+    function revealAnswer() {
+      if (!currentCard) return;
+
+      const revealText =
+        currentDirection === "latin-to-english"
+          ? formatEnglish(currentCard)
+          : formatLatin(currentCard);
       feedbackEl.textContent = `Answer: ${revealText}`;
       feedbackEl.className = "";
     }
@@ -607,7 +811,7 @@ E: greed`;
     function handleLoadVocabulary() {
       try {
         loadVocabulary(importTextEl.value);
-        importFeedbackEl.textContent = `Loaded Stage ${stageNumber} with ${vocab.length} vocab words.`;
+        importFeedbackEl.textContent = `Loaded stage "${stageNumber}" with ${vocab.length} vocab entries.`;
         importFeedbackEl.className = "good";
       } catch (error) {
         importFeedbackEl.textContent = error.message;
@@ -615,7 +819,8 @@ E: greed`;
       }
     }
 
-    document.getElementById("check").addEventListener("click", checkAnswer);
+    // Event listeners
+    document.getElementById("check").addEventListener("click", checkAnswerTyping);
     document.getElementById("newQuestion").addEventListener("click", nextQuestion);
     document.getElementById("reveal").addEventListener("click", revealAnswer);
     document.getElementById("loadVocab").addEventListener("click", handleLoadVocabulary);
@@ -632,10 +837,13 @@ E: greed`;
     });
     answerEl.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
-        checkAnswer();
+        checkAnswerTyping();
       }
     });
 
+    attachChoiceHandlers();
+
+    // Initial setup
     applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "light");
     importTextEl.value = DEFAULT_IMPORT_TEXT;
     loadVocabulary(DEFAULT_IMPORT_TEXT);
