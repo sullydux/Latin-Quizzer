@@ -1,0 +1,55 @@
+stage: "9999";
+L: Constituo, constituere, constitui, constitus
+E: To decide 
+L: Doleo, dolere, dolui 
+E: To hurt, to be in pain 
+L: Mando, mandare, mandavi, mandatus 
+E: To order, entrust 
+L: Occido, occidere, occidi, occisus
+E: To kill
+L: Denuntio, denuntiare, denuntiavi, denuntiatus 
+E: To denounce, reveal 
+L: Augeo, augere, auxi, auctus
+E: To increase, exaggerate 
+L: Tintino, tintinare, tintinavi, tintinatus 
+E: To ring 
+L: Metus, metūs (m) 
+E: Fear, dread 
+L: Corpus, corporis (n)
+E: Body 
+L: Gemitus, gemitūs (m)
+E: Groan, sigh
+L: Ira, irae (f)
+E: Anger
+L: Opes, opum (f pl)
+E: Money, wealth
+L: beneficium, i (n)
+E: Favor 
+L: malus, mala, malum
+E: Bad 
+L: Suspicatus, suspicata, suspicatum
+E: Having suspected 
+L: sumptuosus, -a, -um
+E: Lavish
+L: lego, legare, legavi, legatus 
+E: Give, bequeath
+L: sepelio, sepelire, seplivi, seplutus 
+E: To bury 
+L: mora, morae (f)
+E: Delay 
+L: fallo, fallere, fefelli, falsus 
+E: To deceive 
+L: adhibeo, adhibere, adhibui, adhibitus 
+E: To use, supply
+L: infestus, a, um
+E: Dangerous, hostile 
+L: abhorreo, aborrere, abhorrui 
+E: To shrink (from) 
+L: Falsum, i (n)
+E: Lie 
+L: haud
+E: Not 
+L: fraus, fraudis (m)
+E: Trick
+L: avaritia, avaritiae (f)
+E: Greed

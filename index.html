@@ -365,6 +365,7 @@
           <span class="choice-label">D.</span><span class="choice-text"></span>
         </button>
       </div>
+      <button id="nextChoice" class="secondary" type="button" style="display:none; margin-top:12px;">Next</button>
     </div>
 
     <p id="feedback"></p>
@@ -390,7 +391,7 @@
   </main>
 
   <script>
-    const DEFAULT_IMPORT_TEXT = `stage: "9999";
+    const FALLBACK_IMPORT_TEXT = `stage: "Fallback 9999";
 L: Constituo, constituere, constitui, constitus
 E: To decide 
 L: Doleo, dolere, dolui 
@@ -398,53 +399,7 @@ E: To hurt, to be in pain
 L: Mando, mandare, mandavi, mandatus 
 E: To order, entrust 
 L: Occido, occidere, occidi, occisus
-E: To kill
-L: Denuntio, denuntiare, denuntiavi, denuntiatus 
-E: To denounce, reveal 
-L: Augeo, augere, auxi, auctus
-E: To increase, exaggerate 
-L: Tintino, tintinare, tintinavi, tintinatus 
-E: To ring 
-L: Metus, metūs (m) 
-E: Fear, dread 
-L: Corpus, corporis (n)
-E: Body 
-L: Gemitus, gemitūs (m)
-E: Groan, sigh
-L: Ira, irae (f)
-E: Anger
-L: Opes, opum (f pl)
-E: Money, wealth
-L: beneficium, i (n)
-E: Favor 
-L: malus, mala, malum
-E: Bad 
-L: Suspicatus, suspicata, suspicatum
-E: Having suspected 
-L: sumptuosus, -a, -um
-E: Lavish
-L: lego, legare, legavi, legatus 
-E: Give, bequeath
-L: sepelio, sepelire, seplivi, seplutus 
-E: To bury 
-L: mora, morae (f)
-E: Delay 
-L: fallo, fallere, fefelli, falsus 
-E: To deceive 
-L: adhibeo, adhibere, adhibui, adhibitus 
-E: To use, supply
-L: infestus, a, um
-E: Dangerous, hostile 
-L: abhorreo, aborrere, abhorrui 
-E: To shrink (from) 
-L: Falsum, i (n)
-E: Lie 
-L: haud
-E: Not 
-L: fraus, fraudis (m)
-E: Trick
-L: avaritia, avaritiae (f)
-E: Greed`;
+E: To kill`;
 
     const promptEl = document.getElementById("prompt");
     const promptLabelEl = document.getElementById("promptLabel");
@@ -466,6 +421,7 @@ E: Greed`;
       document.getElementById("choice3"),
       document.getElementById("choice4"),
     ];
+    const nextChoiceEl = document.getElementById("nextChoice");
     const THEME_STORAGE_KEY = "latin-quiz-theme";
 
     let stageNumber = "9999";
@@ -475,8 +431,8 @@ E: Greed`;
     let remainingIndexes = [];
     let correct = 0;
     let attempted = 0;
-    let currentCorrectOption = null; // for MC mode
-    let questionLocked = false; // prevents spam clicking
+    let currentCorrectOption = null;
+    let questionLocked = false;
 
     function normalize(text) {
       return text
@@ -496,11 +452,9 @@ E: Greed`;
     function splitList(text, options = {}) {
       const { preserveParentheses = false } = options;
       let cleaned = cleanEntry(text);
-
       if (!preserveParentheses) {
         cleaned = cleaned.replace(/\s*\([^)]*\)\s*/g, " ");
       }
-
       return cleaned
         .replace(/;$/, "")
         .split(",")
@@ -551,10 +505,8 @@ E: Greed`;
       return { stage: parsedStage, cards };
     }
 
-    // Decide direction based on mode
     function chooseDirection() {
       const mode = modeEl.value;
-
       if (mode === "latin-to-english" || mode === "mc-latin-to-english") {
         return "latin-to-english";
       }
@@ -585,7 +537,6 @@ E: Greed`;
           ? [normalize(formatEnglish(card))]
           : [normalize(formatLatin(card))];
       }
-
       return direction === "latin-to-english"
         ? card.english.map(normalize)
         : card.latin.map(normalize);
@@ -604,13 +555,10 @@ E: Greed`;
     function makeMultipleChoiceOptions(card, direction, difficulty) {
       const corrects = acceptableAnswers(card, direction, difficulty);
       const correct = corrects[0];
-
       const pool = vocab
         .flatMap((c) => acceptableAnswers(c, direction, difficulty))
         .filter((a) => !corrects.includes(a));
-
       const wrongs = randomSubset(pool, 3);
-
       const allOptions = [correct, ...wrongs];
       return {
         correct,
@@ -663,20 +611,16 @@ E: Greed`;
       if (!currentCard || isMultipleChoiceMode()) {
         return;
       }
-
       const guess = normalize(answerEl.value);
       if (!guess) {
         feedbackEl.textContent = "Type an answer first.";
         feedbackEl.className = "bad";
         return;
       }
-
       attempted += 1;
       attemptedEl.textContent = attempted;
-
       const answers = acceptableAnswers(currentCard, currentDirection, difficultyEl.value);
       const isCorrect = answers.includes(guess);
-
       if (isCorrect) {
         correct += 1;
         correctEl.textContent = correct;
@@ -697,13 +641,10 @@ E: Greed`;
         btn.addEventListener("click", () => {
           if (!currentCard || !isMultipleChoiceMode() || questionLocked) return;
           questionLocked = true;
-
           const choiceText = normalize(btn.querySelector(".choice-text").textContent);
           attempted += 1;
           attemptedEl.textContent = attempted;
-
           choiceButtons.forEach((b) => b.classList.remove("correct", "wrong"));
-
           if (choiceText === currentCorrectOption) {
             correct += 1;
             correctEl.textContent = correct;
@@ -718,8 +659,6 @@ E: Greed`;
                 : formatLatin(currentCard);
             feedbackEl.textContent = `Not quite. Correct answer: ${revealText}`;
             feedbackEl.className = "bad";
-
-            // highlight the correct one
             choiceButtons.forEach((b) => {
               const t = normalize(b.querySelector(".choice-text").textContent);
               if (t === currentCorrectOption) {
@@ -727,6 +666,7 @@ E: Greed`;
               }
             });
           }
+          nextChoiceEl.style.display = "inline-block";
         });
       });
     }
@@ -742,13 +682,13 @@ E: Greed`;
 
     function nextQuestion() {
       if (!vocab.length) return;
-
       currentCard = vocab[nextCardIndex()];
       currentDirection = chooseDirection();
       const showLatin = currentDirection === "latin-to-english";
       questionLocked = false;
       feedbackEl.textContent = "";
       feedbackEl.className = "";
+      nextChoiceEl.style.display = "none";
 
       const mc = isMultipleChoiceMode();
 
@@ -761,11 +701,9 @@ E: Greed`;
           : "E: " + formatEnglish(currentCard);
         showTypingUI(false);
         showChoiceUI(true);
-
         const { correct, options } =
           makeMultipleChoiceOptions(currentCard, currentDirection, difficultyEl.value);
         currentCorrectOption = correct;
-
         choiceButtons.forEach((btn, idx) => {
           btn.classList.remove("correct", "wrong");
           const textSpan = btn.querySelector(".choice-text");
@@ -780,7 +718,6 @@ E: Greed`;
           : formatEnglish(currentCard);
         showTypingUI(true);
         showChoiceUI(false);
-
         answerEl.value = "";
         answerEl.focus();
       }
@@ -788,7 +725,6 @@ E: Greed`;
 
     function revealAnswer() {
       if (!currentCard) return;
-
       const revealText =
         currentDirection === "latin-to-english"
           ? formatEnglish(currentCard)
@@ -819,14 +755,31 @@ E: Greed`;
       }
     }
 
+    // External file load (words.txt); falls back if it fails
+    async function loadFromWordsTxt() {
+      try {
+        const resp = await fetch("words.txt");
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = await resp.text();
+        importTextEl.value = text;
+        loadVocabulary(text);
+        importFeedbackEl.textContent = `Loaded stage "${stageNumber}" from words.txt`;
+        importFeedbackEl.className = "good";
+      } catch (err) {
+        importTextEl.value = FALLBACK_IMPORT_TEXT;
+        loadVocabulary(FALLBACK_IMPORT_TEXT);
+        importFeedbackEl.textContent = `Could not load words.txt: ${err.message}. Using fallback list.`;
+        importFeedbackEl.className = "bad";
+      }
+    }
+
     // Event listeners
     document.getElementById("check").addEventListener("click", checkAnswerTyping);
     document.getElementById("newQuestion").addEventListener("click", nextQuestion);
     document.getElementById("reveal").addEventListener("click", revealAnswer);
     document.getElementById("loadVocab").addEventListener("click", handleLoadVocabulary);
     document.getElementById("resetDefault").addEventListener("click", () => {
-      importTextEl.value = DEFAULT_IMPORT_TEXT;
-      handleLoadVocabulary();
+      loadFromWordsTxt();
     });
     modeEl.addEventListener("change", nextQuestion);
     difficultyEl.addEventListener("change", nextQuestion);
@@ -841,12 +794,13 @@ E: Greed`;
       }
     });
 
+    nextChoiceEl.addEventListener("click", nextQuestion);
+
     attachChoiceHandlers();
 
     // Initial setup
     applyTheme(localStorage.getItem(THEME_STORAGE_KEY) || "light");
-    importTextEl.value = DEFAULT_IMPORT_TEXT;
-    loadVocabulary(DEFAULT_IMPORT_TEXT);
+    loadFromWordsTxt();  // ← reads words.txt, fallback to FALLBACK_IMPORT_TEXT
   </script>
 </body>
 </html>
